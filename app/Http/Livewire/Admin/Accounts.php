@@ -6,18 +6,27 @@ use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Livewire\withFileUploads;
+use Livewire\WithPagination;
 
 class Accounts extends Component
 {
-   public $state=[];
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
+
+    use withFileUploads;
+
+    public $state=[];
 
     public $user;
 
-    public $userIdBeingRemoved = null;
+    public $userIdBeingRemoved = null; /**Delete */
 
-    public $showEditModal = false;
+    public $showEditModal = false; /**Edit */
 
-   
+   public $searchTerm = null; /** Seach */
+  
+   public $photo = null; /** profile photo */
 
     /**
      * Delete user
@@ -37,8 +46,8 @@ class Accounts extends Component
     {
        $this->userIdBeingRemoved = $userId;
       
-    //    $this->dispatchBrowserEvent('show-delete-modal');
-    $this->dispatchBrowserEvent('show-delete-confirmation');
+     $this->dispatchBrowserEvent('show-delete-modal');
+    
         
     }
     /**
@@ -79,6 +88,12 @@ class Accounts extends Component
             $validatedData['password'] = Hash::make($validatedData['password']);
         }
 
+        
+        if($this->photo){
+            $validatedData['avatar'] = $this->photo->store('photos' , 'public');
+        }
+
+
         $this->user->update($validatedData);
 
         // session()->flash('message' ,'User added successfully!');
@@ -107,6 +122,10 @@ class Accounts extends Component
 
         $validatedData['password'] = Hash::make($validatedData['password']);
 
+        if($this->photo){
+            $validatedData['avatar'] = $this->photo->store('photos' , 'public');
+        }
+
         User::create($validatedData);
             
         // session()->flash('message' ,'User added successfully!');
@@ -127,9 +146,13 @@ class Accounts extends Component
     /**Show */
     public function render()
     {
-        
+        //dd($this->searchTerm);
         return view('livewire.admin.accounts' , [
-            'users' => User::latest()->paginate(10), 
+            'users' => User::query()
+                        ->where('name' , 'like' , '%'  . $this->searchTerm.'%')
+                        ->orWhere('username' , 'like', '%' . $this->searchTerm.'%')
+                        ->latest()
+                        ->paginate(5), 
         ]);
     }
 

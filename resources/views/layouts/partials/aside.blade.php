@@ -1,10 +1,10 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <!-- <a href="index3.html" class="brand-link">
       <img src="{{ asset('backend/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-light">AdminLTE 3</span>
-    </a>
+      <span class="brand-text font-weight-light">LMS</span>
+    </a> -->
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -40,10 +40,19 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{route ('admin.notification')}}" class="nav-link {{request()->is('admin/notification') ? 'active' : '' }}">
+              <i class="nav-icon far fa-bell"></i>
+              <p>
+                Notification
+              </p>
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="{{route ('admin.profile')}}" class="nav-link {{request()->is('admin/profile') ? 'active' : '' }}">
               <i class="nav-icon fas fa-cog"></i>
               <p>
-                Settings
+                Profile
               </p>
             </a>
           </li>
